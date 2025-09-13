@@ -1,7 +1,11 @@
 package io.liska.subtle;
 
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -69,5 +73,41 @@ public class SubtleMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
+        // Load in save data
+        LOGGER.info("[----------------------TESTING LOADING----------------------]");
+    }
+
+    private long countdown = 100;
+    private long cd = 100;
+
+    @SubscribeEvent
+    public void onServerTick(ServerTickEvent.Post event)
+    {
+        if(countdown > 0)
+        {
+            countdown --;
+            return;
+        }
+
+        ServerLevel level = event.getServer().getLevel(ServerLevel.OVERWORLD);
+
+        if(level == null)
+        {
+            LOGGER.error("(*&^%$#@!+_)(*&^%$#@!+_)---------- Error getting Level! ----------(*&^%$#@!+_)(*&^%$#@!+_)");
+            return;
+        }
+
+        long jump = 100;
+        countdown = cd + jump;
+        cd = 100;
+
+        level.setDayTime(level.getDayTime() - jump);
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event)
+    {
+        // save data here
+        LOGGER.info("[----------------------TESTING SAVING----------------------]");
     }
 }
