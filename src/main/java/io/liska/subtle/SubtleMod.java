@@ -1,6 +1,9 @@
 package io.liska.subtle;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -45,6 +48,11 @@ public class SubtleMod {
     public static final Logger LOGGER = LogUtils.getLogger();
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+
+    // [--------------- Variables ---------------]
+    TimeTweekSaveData ttsDat;
+
+    // [---------------- Methods ----------------]
     public SubtleMod(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -74,40 +82,6 @@ public class SubtleMod {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         // Load in save data
-        LOGGER.info("[----------------------TESTING LOADING----------------------]");
-    }
-
-    private long countdown = 100;
-    private long cd = 100;
-
-    @SubscribeEvent
-    public void onServerTick(ServerTickEvent.Post event)
-    {
-        if(countdown > 0)
-        {
-            countdown --;
-            return;
-        }
-
-        ServerLevel level = event.getServer().getLevel(ServerLevel.OVERWORLD);
-
-        if(level == null)
-        {
-            LOGGER.error("(*&^%$#@!+_)(*&^%$#@!+_)---------- Error getting Level! ----------(*&^%$#@!+_)(*&^%$#@!+_)");
-            return;
-        }
-
-        long jump = 100;
-        countdown = cd + jump;
-        cd = 100;
-
-        level.setDayTime(level.getDayTime() - jump);
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event)
-    {
-        // save data here
-        LOGGER.info("[----------------------TESTING SAVING----------------------]");
+        ttsDat = TimeTweekSaveData.load(event.getServer());
     }
 }
