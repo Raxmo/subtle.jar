@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    private static final ModConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
     // ------------ TEMPLATE ------------ //
     public static final ModConfigSpec.IntValue TEMPLATE_NUMBER;
