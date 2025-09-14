@@ -15,7 +15,6 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class TimeTweekSaveData extends SavedData
 {
     // [--------- Parameters ----------]
-    private static final double RATE = 10.0;
 
     // [---------- Variables ----------]
     private long nexttrigger;
@@ -75,22 +74,25 @@ public class TimeTweekSaveData extends SavedData
     public void onServerTick(ServerTickEvent.Post event)
     {
         if(clevel == null) return;
-        if(nexttrigger > clevel.getDayTime()) return;
+        if(nexttrigger > clevel.getGameTime()) return;
 
         // ======================================================== //
         double t = clevel.getDayTime();
 
-        double lower = Koi(6000, 0, -0.1, t);
-        double upper = Koi(12000, 24000, 0.1, t);
-        double amountb = Koi(0, 24000, 0.1, t);
+        double lower = Koi(3000, 0, -0.25, t);
+        double upper = Koi(9000, 10, -0.25, t);
+        double amountb = Koi(0, 2400, 0.1, t);
 
-        long amount1 = (long)(t + (Math.random() * amountb));
-        long amount2 = (long)(t + (Math.random() * amountb));
+        long amount1 = (long)((Math.random() * Math.random() * amountb));
+        long amount2 = (long)((Math.random() * Math.random() * amountb));
 
-        clevel.setDayTime((long)Math.max(0, t + amount1 - amount2));
-        nexttrigger = (long)(clevel.getDayTime() + (Math.random() * (upper - lower) + lower));
+        long jump = amount1 - amount2;
+        long cooldown = (long)(Math.random() * (upper - lower) + lower);
 
-        SubtleMod.LOGGER.info(">>>>    [Next Trigger] {}, [amount] {}    <<<<", nexttrigger, amountb);
+        clevel.setDayTime((long)Math.max(0, t + jump));
+        nexttrigger = clevel.getGameTime() + cooldown;
+
+        SubtleMod.LOGGER.info(">>>>    [cooldow] {}, [jump] {}    <<<<", cooldown, jump);
 
         setDirty();
     }
