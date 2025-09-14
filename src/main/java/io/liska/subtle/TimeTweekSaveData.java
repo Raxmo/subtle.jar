@@ -11,27 +11,26 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-
 @Mod(value = SubtleMod.MODID)
 public class TimeTweekSaveData extends SavedData
 {
+    // [--------- Parameters ----------]
+    private static final double RATE = 10.0;
+
     // [---------- Variables ----------]
     private long nexttrigger;
-    private long cooldown;
 
     // [---------- Required methods ----------]
     public TimeTweekSaveData()
     {
         NeoForge.EVENT_BUS.register(this);
-        nexttrigger = 100;
-        cooldown = 100;
+        nexttrigger = 0;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries)
     {
         tag.putLong("nexttrigger", nexttrigger);
-        tag.putLong("cooldown", cooldown);
         return tag;
     }
 
@@ -45,10 +44,6 @@ public class TimeTweekSaveData extends SavedData
                 case "nexttrigger" ->
                 {
                     data.nexttrigger = tag.getLong(key);
-                }
-                case "cooldown" ->
-                {
-                    data.cooldown = tag.getLong(key);
                 }
                 default -> {}
             }
@@ -70,22 +65,32 @@ public class TimeTweekSaveData extends SavedData
         return TTSD;
     }
 
-
     // [---------- My methods ----------]
+    private double Koi (double start, double end, double slope, double t)
+    {
+        return ((start - end) / (((-t * slope) / (start - end)) + 1)) + end;
+    }
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent.Post event)
     {
         if(clevel == null) return;
-        if(clevel.getDayTime() < nexttrigger) return;
+        if(nexttrigger > clevel.getDayTime()) return;
 
         // ======================================================== //
+        double t = clevel.getDayTime();
 
-        nexttrigger += cooldown;
+        double lower = Koi(6000, 0, -0.1, t);
+        double upper = Koi(12000, 24000, 0.1, t);
+        double amountb = Koi(0, 24000, 0.1, t);
 
-        clevel.setDayTime(clevel.getDayTime() - cooldown);
+        long amount1 = (long)(t + (Math.random() * amountb));
+        long amount2 = (long)(t + (Math.random() * amountb));
 
-        SubtleMod.LOGGER.info(">>>> [Time Of Day] {}", clevel.getDayTime());
+        clevel.setDayTime((long)Math.max(0, t + amount1 - amount2));
+        nexttrigger = (long)(clevel.getDayTime() + (Math.random() * (upper - lower) + lower));
+
+        SubtleMod.LOGGER.info(">>>>    [Next Trigger] {}, [amount] {}    <<<<", nexttrigger, amountb);
 
         setDirty();
     }
