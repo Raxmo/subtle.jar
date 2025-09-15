@@ -55,16 +55,16 @@ import java.util.Random;
 
 public class InventoryMess
 {
+    private static final Random RANDOM = new Random();
+
     @SubscribeEvent
     public static void onInventoryClose(PlayerContainerEvent.Close event) {
         AbstractContainerMenu menu = event.getContainer();
 
         Container storage = getStorageContainer(menu);
 
-        if (storage != null) {
-            System.out.println("[ContainerClose] Storage-like container detected: " + storage.getClass().getSimpleName());
-        } else {
-            System.out.println("[ContainerClose] Not storage-like.");
+        if (storage != null) { // Swap two random slots
+            swapRandomSlots(storage);
         }
     }
 
@@ -88,5 +88,35 @@ public class InventoryMess
         }
 
         return null;
+    }
+
+
+    private static void swapRandomSlots(Container container) {
+        if (container == null) return;
+
+        int size = container.getContainerSize();
+        if (size < 2) return; // need at least two slots
+
+        // Collect indices of slots that have items
+        List<Integer> filledSlots = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            if (!container.getItem(i).isEmpty()) {
+                filledSlots.add(i);
+            }
+        }
+
+        if (filledSlots.size() < 2) return; // not enough items to swap
+
+        // Pick two random, distinct slots
+        int index1 = filledSlots.get(RANDOM.nextInt(filledSlots.size()));
+        int index2;
+        do {
+            index2 = filledSlots.get(RANDOM.nextInt(filledSlots.size()));
+        } while (index2 == index1);
+
+        // Swap the items
+        ItemStack temp = container.getItem(index1).copy();
+        container.setItem(index1, container.getItem(index2));
+        container.setItem(index2, temp);
     }
 }
