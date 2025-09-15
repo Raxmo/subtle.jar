@@ -11,9 +11,13 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 // TODO: populate with actually useful stuffs
 
+// NOTE: in the constructor of parts, use "type value = Config.VARIABLE.get();" to assign value
+
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
+
+    // ------------ Inventory Fuckery ------------ //
 
     // ------------ TEMPLATE ------------ //
     public static final ModConfigSpec.IntValue TEMPLATE_NUMBER;
