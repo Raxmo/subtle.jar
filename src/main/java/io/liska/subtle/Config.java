@@ -15,33 +15,25 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec SPEC;
 
-    // ------------ Inventory Fuckery ------------ //
+    // ======================== Template ======================== //
+    static {BUILDER.push("Template");}
+    public static final ModConfigSpec.BooleanValue TEMPLATE_BOOL = BUILDER
+            .comment("A template bollean")
+            .define("TempBool", false);
 
-    // ------------ TEMPLATE ------------ //
-    public static final ModConfigSpec.IntValue TEMPLATE_NUMBER;
-    public static final ModConfigSpec.BooleanValue TEMPLATE_BOOL;
-    public static final ModConfigSpec.DoubleValue TEMPLATE_DOUBLE;
-    static
-    {
-        BUILDER.push("Template");
+    public static final ModConfigSpec.IntValue TEMPLATE_INT = BUILDER
+            .comment("A Template Int")
+            .defineInRange("TempInt", 42, 0, Integer.MAX_VALUE);
 
-        TEMPLATE_NUMBER = BUILDER
-                .comment("A template int")
-                .defineInRange("Template Number", 42, 0, 255);
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> TEMPLATE_LIST_ITEMS = BUILDER
+            .comment("A Template List of Item names")
+            .defineListAllowEmpty("Items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
+    static{BUILDER.pop();}
+    // ============================================================ //
 
-        TEMPLATE_BOOL = BUILDER
-                .comment("A template boolean")
-                .define("TemplateBool", false);
+    static final ModConfigSpec SPEC = BUILDER.build();
 
-        TEMPLATE_DOUBLE = BUILDER
-                .comment("A template double")
-                .defineInRange("Template Double", 0.5, 0.0, 1.0);
-
-    }
-
-    static{ SPEC = BUILDER.build(); }
     private static boolean validateItemName(final Object obj) {
         return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
     }

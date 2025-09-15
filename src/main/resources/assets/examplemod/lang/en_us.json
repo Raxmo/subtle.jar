@@ -1,13 +1,12 @@
 {
-  "itemGroup.examplemod": "Example Mod Tab",
+  "itemGroup.subtle8675309": "Example Mod Tab",
   "block.examplemod.example_block": "Example Block",
   "item.examplemod.example_item": "Example Item",
 
-  "examplemod.configuration.title": "Example Mod Configs",
-  "examplemod.configuration.section.examplemod.common.toml": "Example Mod Configs",
-  "examplemod.configuration.section.examplemod.common.toml.title": "Example Mod Configs",
-  "examplemod.configuration.items": "Item List",
-  "examplemod.configuration.logDirtBlock": "Log Dirt Block",
-  "examplemod.configuration.magicNumberIntroduction": "Magic Number Text",
-  "examplemod.configuration.magicNumber": "Magic Number"
+
+
+  "subtle8675309.configuration.Items": "Items",
+  "subtle8675309.configuration.TempInt": "TempInt",
+  "subtle8675309.configuration.TempBool": "TempBool",
+  "subtle8675309.configuration.Template": "Template"
 }
